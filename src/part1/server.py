@@ -5,7 +5,16 @@ nextIp = [0, 0, 0, 0]
 
 # generates new ip
 def generatesNewIP() -> str:
-    pass
+    ipToReturn = f"{nextIp[3]}.{nextIp[2]}.{nextIp[1]}.{nextIp[0]}"
+
+    i = 0
+    while i < 4:
+        if nextIp[i] == 255:
+            nextIp[i] = 0
+            nextIp[i+1] += 1
+        i += 1
+    
+    return ipToReturn
 
 
 # removes given ip from active list
