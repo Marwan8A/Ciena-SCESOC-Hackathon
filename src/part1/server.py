@@ -1,18 +1,48 @@
+currentlyUsedIp = []
+retiredIp = []
+
+nextIp = [0, 0, 0, 0]
+
 # generates new ip
 def generatesNewIP() -> str:
-    pass
+    ipToReturn = f"{nextIp[3]}.{nextIp[2]}.{nextIp[1]}.{nextIp[0]}"
+    nextIp[0]+= 1
+    i = 0
+    while i < 4:
+        if nextIp[i] == 255:
+            nextIp[i] = 0
+            nextIp[i+1] += 1
+        i += 1
+    
+    return ipToReturn
+
 
 # removes given ip from active list
-def retireIp(ipAddr):
-    pass
-# checks recently used list when we need a new ip
-def reuseIp(ipAddr):
-    pass
+def retireIp(ip: str):
+    try:
+        currentlyUsedIp.remove(ip)
+        retiredIp.append(ip)
+        return 1
+    except(ValueError): 
+        return None
+
+# checks recently used list when we need a new ip # will return "-1" if list is empty
+def reuseIp() -> str:
+    if len(retiredIp) > 0:
+        return retiredIp.pop(0)
+    else:
+        return None
+
 
 
 # figures out if a new ip needs to be generated or if one can be reused
 def getNewIp():
-    pass
+    tempIp = reuseIp()
+    if(tempIp != None):
+        return tempIp
+    else:
+        return generatesNewIP()
+
 
 def getIpStatus(ipAddr):
     pass
@@ -54,8 +84,14 @@ if __name__ == '__main__':
                 continue
 
             # Error checking lets leading/trailing '.' through.
-            if callout(commandIn[1].strip('.')) != -1:
+            ret = callout(commandIn[1].strip('.'))
+            if ret == None:
                 print("Command failed.")
+                continue
+            print(ret)
         else:
-            if callout() != -1:
+            ret = callout()
+            if ret == None:
                 print("Command failed.")
+                continue
+            print(ret)
