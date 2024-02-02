@@ -1,39 +1,51 @@
-currentlyUsedIp = []
-retiredIp = []
+import time
+
+# ipAddr : timestamp
+currentlyUsedIp = dict()
+retiredIp = set()
 
 nextIp = [0, 0, 0, 0]
+
+# lease time in seconds
+leaseTime = 24 * 60 * 60
+
+# Update the currentlyUsedIp list by removing timedout addresses before a callout.
+def removeLeaseEnded(func):
+    def inner(*args, **kwargs):
+        for ipAddr in currentlyUsedIp.keys():
+            timestamp = currentlyUsedIp[ipAddr]
+            if ((timestamp - time.time()) > leaseTime):
+                del currentlyUsedIp[ipAddr]
+                retiredIp.update({ipAddr})
+
+        return func(*args, **kwargs)
+    return inner
 
 # generates new ip
 def generatesNewIP() -> str:
     ipToReturn = f"{nextIp[3]}.{nextIp[2]}.{nextIp[1]}.{nextIp[0]}"
-<<<<<<< HEAD
-<<<<<<< HEAD
     nextIp[0]+= 1
-=======
-
->>>>>>> main
-=======
-    nextIp[0]+= 1
->>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
     i = 0
     while i < 4:
         if nextIp[i] == 255:
             nextIp[i] = 0
             nextIp[i+1] += 1
         i += 1
+
+    if i == 4:
+        return None
     
     return ipToReturn
 
 
 # removes given ip from active list
-<<<<<<< HEAD
-<<<<<<< HEAD
+@removeLeaseEnded
 def retireIp(ip: str):
     try:
-        currentlyUsedIp.remove(ip)
-        retiredIp.append(ip)
-        return 1
-    except(ValueError): 
+        del currentlyUsedIp[ip]
+        retiredIp.update({ip})
+        return "RELEASED for {}".format(ip)
+    except: 
         return None
 
 # checks recently used list when we need a new ip # will return "-1" if list is empty
@@ -42,68 +54,50 @@ def reuseIp() -> str:
         return retiredIp.pop(0)
     else:
         return None
-=======
-def retireIp(ip: str, activeList: List[str], retiredList: List[str]) -> int:
-=======
-def retireIp(ip: str):
->>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
-    try:
-        currentlyUsedIp.remove(ip)
-        retiredIp.append(ip)
-        return 1
-    except(ValueError): 
-        return None
 
-# checks recently used list when we need a new ip # will return "-1" if list is empty
-def reuseIp() -> str:
-    if len(retiredIp) > 0:
-        return retiredIp.pop(0)
+# update the timestamp for an ip with th current time.
+@removeLeaseEnded
+def renewIp(ipAddr):
+    if ipAddr in currentlyUsedIp:
+        currentlyUsedIp.update({ipAddr : time.time()})
+        return "RENEWED for {}".format(ipAddr)
     else:
-<<<<<<< HEAD
-        return "-1"
->>>>>>> main
-=======
         return None
->>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
-
-
 
 # figures out if a new ip needs to be generated or if one can be reused
+@removeLeaseEnded
 def getNewIp():
-<<<<<<< HEAD
-<<<<<<< HEAD
-    tempIp = reuseIp()
-    if(tempIp != None):
-=======
-    tempIp = reuseIp(retiredIp)
-    if(tempIp != "-1"):
->>>>>>> main
-=======
-    tempIp = reuseIp()
-    if(tempIp != None):
->>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
-        return tempIp
+    ipAddr = reuseIp()
+    if(ipAddr != None):
+        currentlyUsedIp.update({ipAddr : time.time()})
+        return "Offer {}".format(ipAddr)
     else:
-        return generatesNewIP()
+        ipAddr = generatesNewIP();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
+        if ipAddr == None:
+            return "No Ip Addresses Remaining."
 
+        currentlyUsedIp.update({ipAddr : time.time()})
+        return "Offer {}".format(ipAddr)
+
+
+@removeLeaseEnded
 def getIpStatus(ipAddr):
-    pass
+    if ipAddr in currentlyUsedIp:
+        return "{} ASSIGNED".format(ipAddr)
+    else:
+        return "{} AVAILABLE".format(ipAddr)
 
 if __name__ == '__main__':
     # Command : requiresIp, callout
     commandOpts = {
             "ASK" : (False, getNewIp),
-            "RENEW" : (True, reuseIp),
+            "RENEW" : (True, renewIp),
             "RELEASE" : (True, retireIp),
             "STATUS" : (True, getIpStatus)
             }
     while True:
-        commandIn = input("Please input a command:").strip().split()
+        commandIn = input("Please input a command:\n").strip().split()
 
         if len(commandIn) < 1:
             print("No command entered.")
@@ -142,9 +136,4 @@ if __name__ == '__main__':
                 print("Command failed.")
                 continue
             print(ret)
-<<<<<<< HEAD
-=======
-#test code
->>>>>>> main
-=======
->>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
+
