@@ -31,9 +31,6 @@ def generatesNewIP() -> str:
             nextIp[i] = 0
             nextIp[i+1] += 1
         i += 1
-
-    if i == 4:
-        return None
     
     return ipToReturn
 
