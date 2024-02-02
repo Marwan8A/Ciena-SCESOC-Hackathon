@@ -7,10 +7,14 @@ nextIp = [0, 0, 0, 0]
 def generatesNewIP() -> str:
     ipToReturn = f"{nextIp[3]}.{nextIp[2]}.{nextIp[1]}.{nextIp[0]}"
 <<<<<<< HEAD
+<<<<<<< HEAD
     nextIp[0]+= 1
 =======
 
 >>>>>>> main
+=======
+    nextIp[0]+= 1
+>>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
     i = 0
     while i < 4:
         if nextIp[i] == 255:
@@ -22,6 +26,7 @@ def generatesNewIP() -> str:
 
 
 # removes given ip from active list
+<<<<<<< HEAD
 <<<<<<< HEAD
 def retireIp(ip: str):
     try:
@@ -39,25 +44,33 @@ def reuseIp() -> str:
         return None
 =======
 def retireIp(ip: str, activeList: List[str], retiredList: List[str]) -> int:
+=======
+def retireIp(ip: str):
+>>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
     try:
-        activeList.remove(ip)
-        retiredList.append(ip)
+        currentlyUsedIp.remove(ip)
+        retiredIp.append(ip)
         return 1
     except(ValueError): 
-        return -1
+        return None
 
 # checks recently used list when we need a new ip # will return "-1" if list is empty
-def reuseIp(unusedList) -> str:
-    if len(unusedList) > 0:
-        return unusedList.pop(0)
+def reuseIp() -> str:
+    if len(retiredIp) > 0:
+        return retiredIp.pop(0)
     else:
+<<<<<<< HEAD
         return "-1"
 >>>>>>> main
+=======
+        return None
+>>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
 
 
 
 # figures out if a new ip needs to be generated or if one can be reused
 def getNewIp():
+<<<<<<< HEAD
 <<<<<<< HEAD
     tempIp = reuseIp()
     if(tempIp != None):
@@ -65,11 +78,18 @@ def getNewIp():
     tempIp = reuseIp(retiredIp)
     if(tempIp != "-1"):
 >>>>>>> main
+=======
+    tempIp = reuseIp()
+    if(tempIp != None):
+>>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
         return tempIp
     else:
         return generatesNewIP()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
 
 def getIpStatus(ipAddr):
     pass
@@ -122,6 +142,9 @@ if __name__ == '__main__':
                 print("Command failed.")
                 continue
             print(ret)
+<<<<<<< HEAD
 =======
 #test code
 >>>>>>> main
+=======
+>>>>>>> a9d3afcee907c556ccdf2207c69e2327f977ab17
