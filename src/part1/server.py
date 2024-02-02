@@ -6,7 +6,11 @@ nextIp = [0, 0, 0, 0]
 # generates new ip
 def generatesNewIP() -> str:
     ipToReturn = f"{nextIp[3]}.{nextIp[2]}.{nextIp[1]}.{nextIp[0]}"
+<<<<<<< HEAD
     nextIp[0]+= 1
+=======
+
+>>>>>>> main
     i = 0
     while i < 4:
         if nextIp[i] == 255:
@@ -18,6 +22,7 @@ def generatesNewIP() -> str:
 
 
 # removes given ip from active list
+<<<<<<< HEAD
 def retireIp(ip: str):
     try:
         currentlyUsedIp.remove(ip)
@@ -32,17 +37,39 @@ def reuseIp() -> str:
         return retiredIp.pop(0)
     else:
         return None
+=======
+def retireIp(ip: str, activeList: List[str], retiredList: List[str]) -> int:
+    try:
+        activeList.remove(ip)
+        retiredList.append(ip)
+        return 1
+    except(ValueError): 
+        return -1
+
+# checks recently used list when we need a new ip # will return "-1" if list is empty
+def reuseIp(unusedList) -> str:
+    if len(unusedList) > 0:
+        return unusedList.pop(0)
+    else:
+        return "-1"
+>>>>>>> main
 
 
 
 # figures out if a new ip needs to be generated or if one can be reused
 def getNewIp():
+<<<<<<< HEAD
     tempIp = reuseIp()
     if(tempIp != None):
+=======
+    tempIp = reuseIp(retiredIp)
+    if(tempIp != "-1"):
+>>>>>>> main
         return tempIp
     else:
         return generatesNewIP()
 
+<<<<<<< HEAD
 
 def getIpStatus(ipAddr):
     pass
@@ -95,3 +122,6 @@ if __name__ == '__main__':
                 print("Command failed.")
                 continue
             print(ret)
+=======
+#test code
+>>>>>>> main
